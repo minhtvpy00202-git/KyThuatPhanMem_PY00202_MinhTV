@@ -1,0 +1,7 @@
+package mini.expense.model;
+import java.time.LocalDate;
+public class Txn {
+  public String id, userId, categoryId, notes;
+  public double amount;
+  public LocalDate txDay;
+}

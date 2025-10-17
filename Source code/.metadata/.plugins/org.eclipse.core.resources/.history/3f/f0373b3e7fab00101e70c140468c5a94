@@ -1,0 +1,5 @@
+package mini.expense.model;
+
+public class Txn {
+
+}

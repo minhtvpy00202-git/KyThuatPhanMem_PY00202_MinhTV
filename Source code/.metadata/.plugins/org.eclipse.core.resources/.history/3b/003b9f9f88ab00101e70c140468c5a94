@@ -1,0 +1,23 @@
+<h2>Thêm giao dịch (${type})</h2>
+<form method="post" action="${pageContext.request.contextPath}/tx/create">
+  <input type="hidden" name="type" value="${type}">
+
+  <label>Danh mục:</label>
+  <select name="categoryId" required>
+    <c:forEach var="c" items="${cats}">
+      <option value="${c.id}">${c.name}</option>
+    </c:forEach>
+  </select><br>
+
+  <label>Ngày:</label>
+  <input type="date" name="txDay" value="<%=java.time.LocalDate.now()%>" required><br>
+
+  <label>Số tiền:</label>
+  <input type="number" step="0.01" name="amount" required><br>
+
+  <label>Ghi chú:</label>
+  <input name="notes"><br><br>
+
+  <button>Ghi lại</button>
+  <a href="${pageContext.request.contextPath}/home">Hủy</a>
+</form>

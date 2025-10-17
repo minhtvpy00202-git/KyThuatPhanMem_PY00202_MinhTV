@@ -1,0 +1,60 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+
+<div class="container">
+  <div class="password-form">
+    <div class="form-header">
+      <h2>🔐 Đổi mật khẩu tài khoản</h2>
+      <p >Cập nhật mật khẩu để bảo mật tài khoản của bạn</p>
+    </div>
+
+    <c:if test="${not empty error}">
+      <div class="alert alert-error">
+        ⚠️ ${error}
+      </div>
+    </c:if>
+    
+    <c:if test="${not empty msg}">
+      <div class="alert alert-success">
+        ✅ ${msg}
+      </div>
+    </c:if>
+
+    <form method="post" action="${pageContext.request.contextPath}/change-password">
+      <div class="form-group">
+        <label class="form-label">🔒 Mật khẩu hiện tại</label>
+        <input type="password" name="old" class="form-control" placeholder="Nhập mật khẩu hiện tại của bạn..." required style="padding: 1rem; font-size: 1rem;">
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">🆕 Mật khẩu mới</label>
+        <input type="password" name="new" class="form-control" placeholder="Nhập mật khẩu mới (tối thiểu 8 ký tự)..." required style="padding: 1rem; font-size: 1rem;">
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">🔄 Xác nhận mật khẩu mới</label>
+        <input type="password" name="re" class="form-control" placeholder="Nhập lại mật khẩu mới để xác nhận..." required style="padding: 1rem; font-size: 1rem;">
+      </div>
+      
+      <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+        <button type="submit" class="btn btn-primary" style="flex: 1; padding: 1rem; font-size: 1rem; font-weight: 600;">
+          🔐 Cập nhật mật khẩu
+        </button>
+        <a href="${pageContext.request.contextPath}/home" class="btn btn-secondary" style="flex: 1; padding: 1rem; font-size: 1rem; font-weight: 600; text-align: center; text-decoration: none;">
+          ❌ Hủy bỏ
+        </a>
+      </div>
+    </form>
+  </div>
+  
+  <div class="security-tips">
+    <h4>🛡️ Hướng dẫn tạo mật khẩu mạnh</h4>
+    <ul>
+      <li><strong>Độ dài:</strong> Tối thiểu 8 ký tự, khuyến nghị 12-16 ký tự</li>
+      <li><strong>Kết hợp:</strong> Chữ hoa, chữ thường, số và ký tự đặc biệt (!@#$%^&*)</li>
+      <li><strong>Tránh:</strong> Thông tin cá nhân như tên, ngày sinh, số điện thoại</li>
+      <li><strong>Duy nhất:</strong> Không sử dụng lại mật khẩu của các tài khoản khác</li>
+      <li><strong>Bảo mật:</strong> Thay đổi định kỳ 3-6 tháng một lần</li>
+    </ul>
+  </div>
+</div>

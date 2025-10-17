@@ -1,0 +1,5 @@
+package mini.expense.config;
+
+public class DataSourceProvider {
+
+}

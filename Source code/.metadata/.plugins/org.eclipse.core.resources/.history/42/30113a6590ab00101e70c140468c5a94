@@ -1,0 +1,108 @@
+<%@ page contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt"%>
+
+<div class="container">
+  <h2 >📊 Sổ thu chi</h2>
+  
+  <div class="compact-form">
+    <h3 class="form-title">🔍 Lọc theo thời gian</h3>
+    <form method="get" action="${pageContext.request.contextPath}/home" class="form-horizontal">
+      <div class="form-group">
+        <label class="form-label">Từ ngày</label>
+        <input type="date" name="from" value="${from}" class="form-control">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Đến ngày</label>
+        <input type="date" name="to" value="${to}" class="form-control">
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary">
+          🔍 Lọc dữ liệu
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="full-width-table">
+    <div class="table-header">
+      <h3>💸 Chi tiêu</h3>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>📅 Ngày</th>
+            <th>📂 Danh mục</th>
+            <th>💰 Số tiền</th>
+            <th>📝 Ghi chú</th>
+          </tr>
+        </thead>
+        <tbody>
+          <c:forEach var="t" items="${expense}">
+            <tr>
+              <td ><fmt:formatDate value="${t.txDay}" pattern="dd/MM/yyyy"/></td>
+              <td>
+                
+                  ${t.categoryName}
+                
+              </td>
+              <td >
+                -<fmt:formatNumber value="${t.amount}" pattern="#,##0.##" /> ₫
+              </td>
+              <td >${t.notes}</td>
+            </tr>
+          </c:forEach>
+          <c:if test="${empty expense}">
+            <tr>
+              <td colspan="4" >
+                📭 Chưa có chi tiêu nào trong khoảng thời gian này
+              </td>
+            </tr>
+          </c:if>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="full-width-table">
+    <div class="table-header">
+      <h3>💰 Thu nhập</h3>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>📅 Ngày</th>
+            <th>📂 Danh mục</th>
+            <th>💰 Số tiền</th>
+            <th>📝 Ghi chú</th>
+          </tr>
+        </thead>
+        <tbody>
+          <c:forEach var="t" items="${income}">
+            <tr>
+              <td ><fmt:formatDate value="${t.txDay}" pattern="dd/MM/yyyy"/></td>
+              <td>
+                <span >
+                  ${t.categoryName}
+                </span>
+              </td>
+              <td >
+                +<fmt:formatNumber value="${t.amount}" pattern="#,##0.##" /> ₫
+              </td>
+              <td >${t.notes}</td>
+            </tr>
+          </c:forEach>
+          <c:if test="${empty income}">
+            <tr>
+              <td colspan="4" >
+                📭 Chưa có thu nhập nào trong khoảng thời gian này
+              </td>
+            </tr>
+          </c:if>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

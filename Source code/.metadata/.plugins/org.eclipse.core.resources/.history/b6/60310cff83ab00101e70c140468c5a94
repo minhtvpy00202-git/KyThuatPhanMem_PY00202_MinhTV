@@ -1,0 +1,28 @@
+package mini.expense.dao;
+import mini.expense.model.Category;
+import javax.sql.DataSource; import java.sql.*; import java.util.*;
+
+public class CategoryDAO {
+  private final DataSource ds; public CategoryDAO(DataSource ds){ this.ds=ds; }
+
+  public List<Category> allForUser(String userId, String typeId){ // typeId: 'INCOME' | 'EXPENSE'
+    String sql = """
+      SELECT c.* FROM Category c
+      WHERE c.categoryTypeId=? AND (c.userId IS NULL OR c.userId=?)
+      ORDER BY c.name
+      """;
+    List<Category> list = new ArrayList<>();
+    try(Connection cn=ds.getConnection(); PreparedStatement ps=cn.prepareStatement(sql)){
+      ps.setString(1,typeId); ps.setString(2,userId);
+      try(ResultSet rs=ps.executeQuery()){
+        while(rs.next()){
+          Category c = new Category();
+          c.id=rs.getString("id"); c.userId=rs.getString("userId");
+          c.categoryTypeId=rs.getString("categoryTypeId"); c.name=rs.getString("name");
+          list.add(c);
+        }
+      }
+    } catch(SQLException e){ throw new RuntimeException(e); }
+    return list;
+  }
+}

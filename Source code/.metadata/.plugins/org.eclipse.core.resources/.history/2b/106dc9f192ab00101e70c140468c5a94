@@ -1,0 +1,43 @@
+package mini.expense.web;
+
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
+import jakarta.servlet.*;
+import mini.expense.config.DataSourceProvider;
+import mini.expense.dao.AuthDAO;
+import mini.expense.model.User;
+import java.io.IOException;
+
+@WebServlet(urlPatterns = { "/", "/login", "/logout" })
+public class AuthServlet extends HttpServlet {
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String p = req.getServletPath();
+		if ("/logout".equals(p)) {
+			req.getSession().invalidate();
+			resp.sendRedirect(req.getContextPath() + "/login");
+			return;
+		}
+		if ("/".equals(p)) {
+			resp.sendRedirect(req.getContextPath() + "/login");
+			return;
+		}
+		req.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(req, resp);
+	}
+
+	@Override protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+	        throws ServletException, IOException {
+	  try {
+	    String u=req.getParameter("username"), pw=req.getParameter("password");
+	    var user = new AuthDAO(DataSourceProvider.get()).login(u,pw);
+	    if (user==null) { req.setAttribute("error","Sai tài khoản/mật khẩu");
+	      req.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(req,resp); return; }
+	    req.getSession().setAttribute("user", user);
+	    resp.sendRedirect(req.getContextPath()+"/home");
+	  } catch (Exception ex) {
+	    ex.printStackTrace(); // để thấy lỗi thực trên catalina log
+	    throw new ServletException(ex);
+	  }
+	}
+
+}

@@ -1,0 +1,40 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><c:out value="${pageTitle != null ? pageTitle : 'Mini Expense'}"/></title>
+  <link rel="stylesheet" href="<c:url value='/css/app.css'/>">
+
+</head>
+<body>
+  <div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h3>Menu</h3>
+      <nav class="menu">
+        <a href="${pageContext.request.contextPath}/home">🏠 Về trang chủ</a>
+        <a href="${pageContext.request.contextPath}/tx/new?type=INCOME">💴 Thêm thu nhập</a>
+        <a href="${pageContext.request.contextPath}/tx/new?type=EXPENSE">💷 Thêm chi tiêu</a>
+        <a href="${pageContext.request.contextPath}/categories">📄 Quản lý danh mục</a>
+        <a href="${pageContext.request.contextPath}/change-password">🗝 Đổi mật khẩu</a>
+        <hr>
+        <a href="${pageContext.request.contextPath}/logout">🔓 Đăng xuất</a>
+
+        <div class="muted">
+          👤 <c:out value="${sessionScope.user != null ? sessionScope.user.username : ''}"/>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Nội dung chính -->
+    <main class="content">
+      <jsp:include page="${body}"/>
+    </main>
+
+  </div>
+</body>
+</html>

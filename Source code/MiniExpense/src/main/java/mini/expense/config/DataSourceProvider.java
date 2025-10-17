@@ -1,0 +1,37 @@
+// mini/expense/config/DataSourceProvider.java
+package mini.expense.config;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import javax.sql.DataSource;
+import java.io.InputStream;
+import java.util.Properties;
+
+public class DataSourceProvider {
+  private static HikariDataSource ds;
+
+  static {
+    try {
+      Properties p = new Properties();
+      try (InputStream in = DataSourceProvider.class.getClassLoader()
+              .getResourceAsStream("db.properties")) {
+        if (in == null) throw new IllegalStateException("db.properties NOT FOUND in classpath");
+        p.load(in);
+      }
+      HikariConfig cfg = new HikariConfig();
+      cfg.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver"); // QUAN TRỌNG
+      cfg.setJdbcUrl(p.getProperty("db.url"));
+      cfg.setUsername(p.getProperty("db.user"));
+      cfg.setPassword(p.getProperty("db.pass"));
+      cfg.setMaximumPoolSize(Integer.parseInt(p.getProperty("db.pool","8")));
+
+      ds = new HikariDataSource(cfg);
+      System.out.println("[DS] OK: " + cfg.getJdbcUrl());
+    } catch (Exception e) {
+      e.printStackTrace();                            // in rõ vào catalina.out
+      throw new RuntimeException("Init DataSource failed: " + e, e);
+    }
+  }
+
+  public static DataSource get() { return ds; }
+}

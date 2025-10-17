@@ -1,0 +1,54 @@
+package mini.expense.web;
+
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
+import jakarta.servlet.*;
+import mini.expense.config.DataSourceProvider;
+import mini.expense.dao.CategoryDAO;
+import mini.expense.model.User;
+
+import java.io.IOException;
+import java.util.Optional;
+
+@WebServlet(urlPatterns = { "/categories" })
+public class CategoryManageServlet extends HttpServlet {
+	private CategoryDAO dao;
+
+	@Override
+	public void init() {
+		dao = new CategoryDAO(DataSourceProvider.get());
+	}
+
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		User u = (User) req.getSession().getAttribute("user");
+		if (u == null) {
+			resp.sendRedirect(req.getContextPath() + "/login");
+			return;
+		}
+
+		String type = Optional.ofNullable(req.getParameter("type")).orElse("EXPENSE"); // mặc định tab Chi
+		req.setAttribute("type", type);
+		req.setAttribute("items", dao.allForUser(u.id, type));
+		req.getRequestDispatcher("/WEB-INF/views/categories.jsp").forward(req, resp);
+	}
+
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		User u = (User) req.getSession().getAttribute("user");
+		if (u == null) {
+			resp.sendRedirect(req.getContextPath() + "/login");
+			return;
+		}
+
+		String action = req.getParameter("action");
+		String type = Optional.ofNullable(req.getParameter("type")).orElse("EXPENSE");
+
+		switch (action) {
+		case "create" -> dao.create(u.id, type, req.getParameter("name"));
+		case "rename" -> dao.rename(req.getParameter("id"), u.id, req.getParameter("name"));
+		case "delete" -> dao.delete(req.getParameter("id"), u.id);
+		}
+		resp.sendRedirect(req.getContextPath() + "/categories?type=" + type);
+	}
+}

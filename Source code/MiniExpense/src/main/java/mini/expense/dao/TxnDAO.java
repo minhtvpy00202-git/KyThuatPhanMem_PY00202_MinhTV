@@ -1,0 +1,61 @@
+package mini.expense.dao;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.sql.DataSource;
+
+import mini.expense.model.Txn;
+
+public class TxnDAO {
+  private final DataSource ds; public TxnDAO(DataSource ds){ this.ds=ds; }
+
+  public void create(Txn t){
+    String sql="INSERT INTO [Transaction](id,userId,categoryId,amount,txDay,notes) VALUES (CONVERT(varchar(36),NEWID()),?,?,?,?,?)";
+    try(Connection cn=ds.getConnection(); PreparedStatement ps=cn.prepareStatement(sql)){
+      ps.setString(1,t.userId); ps.setString(2,t.categoryId);
+      ps.setBigDecimal(3, java.math.BigDecimal.valueOf(t.amount));
+      ps.setDate(4, t.txDay); 
+      ps.setString(5,t.notes);
+      ps.executeUpdate();
+    } catch(SQLException e){ throw new RuntimeException(e); }
+  }
+
+  public List<Txn> list(String userId, LocalDate from, LocalDate to, String typeId){
+	  String sql = """
+	    SELECT t.*, c.name AS categoryName, c.categoryTypeId
+	    FROM [Transaction] t
+	    JOIN Category c ON t.categoryId = c.id
+	    WHERE t.userId = ? AND t.txDay >= ? AND t.txDay <= ? AND c.categoryTypeId = ?
+	    ORDER BY t.txDay DESC, t.id DESC
+	  """;
+	  List<Txn> list = new ArrayList<>();
+	  try (Connection cn = ds.getConnection();
+	       PreparedStatement ps = cn.prepareStatement(sql)) {
+	    ps.setString(1, userId);
+	    ps.setDate(2, Date.valueOf(from));
+	    ps.setDate(3, Date.valueOf(to));
+	    ps.setString(4, typeId);
+	    try (ResultSet rs = ps.executeQuery()) {
+	      while (rs.next()) {
+	        Txn t = new Txn();
+	        t.id = rs.getString("id");
+	        t.userId = rs.getString("userId");
+	        t.categoryId = rs.getString("categoryId");
+	        t.categoryName = rs.getString("categoryName"); // <-- gán tên
+	        t.amount = rs.getBigDecimal("amount").doubleValue();
+	        t.txDay = rs.getDate("txDay"); 
+	        t.notes = rs.getString("notes");
+	        list.add(t);
+	      }
+	    }
+	  } catch (SQLException e) { throw new RuntimeException(e); }
+	  return list;
+	}
+
+}

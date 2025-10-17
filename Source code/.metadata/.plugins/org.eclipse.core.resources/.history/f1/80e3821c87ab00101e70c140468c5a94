@@ -1,0 +1,46 @@
+package mini.expense.dao;
+import mini.expense.model.Txn;
+import javax.sql.DataSource; import java.sql.*; import java.time.*; import java.util.*;
+
+public class TxnDAO {
+  private final DataSource ds; public TxnDAO(DataSource ds){ this.ds=ds; }
+
+  public void create(Txn t){
+    String sql="INSERT INTO [Transaction](id,userId,categoryId,amount,txDay,notes) VALUES (CONVERT(varchar(36),NEWID()),?,?,?,?,?)";
+    try(Connection cn=ds.getConnection(); PreparedStatement ps=cn.prepareStatement(sql)){
+      ps.setString(1,t.userId); ps.setString(2,t.categoryId);
+      ps.setBigDecimal(3, java.math.BigDecimal.valueOf(t.amount));
+      ps.setDate(4, java.sql.Date.valueOf(t.txDay));
+      ps.setString(5,t.notes);
+      ps.executeUpdate();
+    } catch(SQLException e){ throw new RuntimeException(e); }
+  }
+
+  public List<Txn> list(String userId, LocalDate from, LocalDate to, String typeId){
+    String sql = """
+      SELECT t.*, c.categoryTypeId FROM [Transaction] t
+        JOIN Category c ON t.categoryId=c.id
+      WHERE t.userId=? AND t.txDay>=? AND t.txDay<=? AND c.categoryTypeId=?
+      ORDER BY t.txDay DESC, t.id DESC
+    """;
+    List<Txn> list = new ArrayList<>();
+    try(Connection cn=ds.getConnection(); PreparedStatement ps=cn.prepareStatement(sql)){
+      ps.setString(1,userId);
+      ps.setDate(2, java.sql.Date.valueOf(from));
+      ps.setDate(3, java.sql.Date.valueOf(to));
+      ps.setString(4,typeId);
+      try(ResultSet rs=ps.executeQuery()){
+        while(rs.next()){
+          Txn t = new Txn();
+          t.id = rs.getString("id"); t.userId = rs.getString("userId");
+          t.categoryId = rs.getString("categoryId");
+          t.amount = rs.getBigDecimal("amount").doubleValue();
+          t.txDay = rs.getDate("txDay").toLocalDate();
+          t.notes = rs.getString("notes");
+          list.add(t);
+        }
+      }
+    } catch(SQLException e){ throw new RuntimeException(e); }
+    return list;
+  }
+}

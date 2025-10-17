@@ -1,0 +1,96 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>mini.expense</groupId>
+  <artifactId>mini-expense</artifactId>
+  <version>1.0.0</version>
+  <packaging>war</packaging>
+
+  <properties>
+    <!-- JDK bạn build project (17 là an toàn; nếu dùng 21 đổi thành 21) -->
+    <maven.compiler.release>17</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!-- versions trung tâm -->
+    <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
+    <jstl.version>3.0.1</jstl.version>
+    <mssql.version>12.6.1.jre11</mssql.version>
+    <hikari.version>5.1.0</hikari.version>
+    <slf4j.version>2.0.13</slf4j.version>
+    <war.plugin.version>3.4.0</war.plugin.version>
+    <compiler.plugin.version>3.13.0</compiler.plugin.version>
+  </properties>
+
+  <build>
+    <!-- tên WAR -> context path /mini-expense -->
+    <finalName>mini-expense</finalName>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${compiler.plugin.version}</version>
+        <configuration>
+          <release>${maven.compiler.release}</release>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>${war.plugin.version}</version>
+        <configuration>
+          <!-- Servlet 6 không bắt buộc web.xml -->
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- Servlet API do Tomcat cung cấp -->
+    <dependency>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <version>${jakarta.servlet.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- JSTL (EL functions, c:forEach, ...) -->
+    <dependency>
+      <groupId>jakarta.servlet.jsp.jstl</groupId>
+      <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+      <version>${jstl.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.web</groupId>
+      <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+      <version>${jstl.version}</version>
+    </dependency>
+
+    <!-- SQL Server JDBC -->
+    <dependency>
+      <groupId>com.microsoft.sqlserver</groupId>
+      <artifactId>mssql-jdbc</artifactId>
+      <version>${mssql.version}</version>
+      <!-- compile scope để chắc chắn được đóng gói vào WAR -->
+    </dependency>
+
+    <!-- HikariCP -->
+    <dependency>
+      <groupId>com.zaxxer</groupId>
+      <artifactId>HikariCP</artifactId>
+      <version>${hikari.version}</version>
+    </dependency>
+
+    <!-- Logger tối giản để hết cảnh báo SLF4J (runtime để được đóng gói) -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+</project>

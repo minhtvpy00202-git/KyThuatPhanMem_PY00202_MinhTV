@@ -1,0 +1,124 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+
+<div class="container">
+  <h2 >📂 Quản lý danh mục</h2>
+  
+  <div class="category-tabs">
+    <a class="tab-btn ${type=='EXPENSE'?'active':''}" 
+       href="${pageContext.request.contextPath}/categories?type=EXPENSE">
+      💸 Danh mục chi tiêu
+    </a>
+    <a class="tab-btn ${type=='INCOME'?'active':''}" 
+       href="${pageContext.request.contextPath}/categories?type=INCOME">
+      💰 Danh mục thu nhập
+    </a>
+  </div>
+  
+  <div class="category-form">
+    <h3 class="form-title">
+      <c:choose>
+        <c:when test="${type == 'EXPENSE'}">➕ Thêm danh mục chi tiêu mới</c:when>
+        <c:otherwise>➕ Thêm danh mục thu nhập mới</c:otherwise>
+      </c:choose>
+    </h3>
+    <form method="post" action="${pageContext.request.contextPath}/categories" class="form-horizontal">
+      <input type="hidden" name="action" value="create">
+      <input type="hidden" name="type" value="${type}">
+      <div class="form-group">
+        <label class="form-label">Tên danh mục</label>
+        <input type="text" name="name" class="form-control" placeholder="Ví dụ: Ăn uống, Xăng xe, Lương..." required >
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-success" >
+          ➕ Thêm danh mục
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="category-table">
+    <div >
+      <c:choose>
+        <c:when test="${type == 'EXPENSE'}">💸 Danh sách danh mục chi tiêu</c:when>
+        <c:otherwise>💰 Danh sách danh mục thu nhập</c:otherwise>
+      </c:choose>
+    </div>
+    <div class="table-container" >
+      <table>
+        <thead>
+          <tr>
+            <th>📝 Tên danh mục</th>
+            <th>👤 Thuộc về</th>
+            <th>⚙️ Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <c:forEach var="c" items="${items}">
+            <tr>
+              <td>
+                <c:choose>
+                  <c:when test="${empty c.userId}">
+                    <span >
+                      ${c.name}
+                    </span>
+                  </c:when>
+                  <c:otherwise>
+                    <form method="post" action="${pageContext.request.contextPath}/categories" >
+                      <input type="hidden" name="action" value="rename">
+                      <input type="hidden" name="type" value="${type}">
+                      <input type="hidden" name="id" value="${c.id}">
+                      <input type="text" name="name" value="${c.name}" class="form-control" >
+                      <button type="submit" class="btn btn-primary" >
+                        💾 Lưu
+                      </button>
+                    </form>
+                  </c:otherwise>
+                </c:choose>
+              </td>
+              <td>
+                <c:choose>
+                  <c:when test="${empty c.userId}">
+                    <span >
+                      🌐 Hệ thống
+                    </span>
+                  </c:when>
+                  <c:otherwise>
+                    <span >
+                      👤 Cá nhân
+                    </span>
+                  </c:otherwise>
+                </c:choose>
+              </td>
+              <td>
+                <c:if test="${not empty c.userId}">
+                  <form method="post" action="${pageContext.request.contextPath}/categories"
+                        onsubmit="return confirm('⚠️ Bạn có chắc chắn muốn xóa danh mục \"${c.name}\" không?\n\nLưu ý: Hành động này không thể hoàn tác!');" >
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="type" value="${type}">
+                    <input type="hidden" name="id" value="${c.id}">
+                    <button type="submit" class="btn btn-error" >
+                      🗑️ Xóa
+                    </button>
+                  </form>
+                </c:if>
+                <c:if test="${empty c.userId}">
+                  <span >
+                    🔒 Không thể xóa
+                  </span>
+                </c:if>
+              </td>
+            </tr>
+          </c:forEach>
+          <c:if test="${empty items}">
+            <tr>
+              <td colspan="3" >
+                📭 Chưa có danh mục nào được tạo
+              </td>
+            </tr>
+          </c:if>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

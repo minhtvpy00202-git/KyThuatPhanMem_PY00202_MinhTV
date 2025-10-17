@@ -1,0 +1,277 @@
+@charset "UTF-8";
+/* ================================
+   RESET + THEME TOKENS
+================================= */
+:root{
+  --bg: #f5f7fb;
+  --panel: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --primary: #2563eb;
+  --primary-600:#1d4ed8;
+  --border:#e5e7eb;
+  --ring: rgba(37,99,235,.18);
+  --success:#16a34a;
+  --danger:#dc2626;
+  --warning:#d97706;
+  --radius: 12px;
+  --shadow: 0 6px 18px rgba(16,24,40,.06);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  color:var(--text);
+  background:var(--bg);
+  line-height:1.5;
+}
+
+/* Links */
+a{color:var(--primary);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Headings */
+h1,h2,h3{margin:0 0 .75rem;line-height:1.25}
+h1{font-size:1.75rem}
+h2{font-size:1.35rem}
+h3{font-size:1.1rem;color:#111827}
+
+/* ================================
+   LAYOUT (Sidebar + Content)
+================================= */
+.layout{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns: 260px 1fr;
+  gap:24px;
+  padding:24px;
+}
+
+.sidebar{
+  position:sticky; top:24px;
+  align-self:start;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:16px;
+}
+
+.sidebar h3{
+  margin:4px 0 12px;
+  font-weight:700;
+}
+
+.menu{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.menu a{
+  display:flex; align-items:center; gap:10px;
+  padding:10px 12px;
+  border-radius:10px;
+  color:var(--text);
+  border:1px solid transparent;
+}
+.menu a:hover{
+  background:#f3f6ff;
+  border-color:#e3eaff;
+  text-decoration:none;
+}
+.menu hr{
+  border:0;height:1px;background:var(--border);
+  margin:10px 0;
+}
+.sidebar .user{
+  margin-top:8px;
+  font-size:.875rem; color:var(--muted);
+}
+
+.content{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:22px;
+}
+
+/* Page section header */
+.page-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:14px;
+}
+
+/* ================================
+   FORMS
+================================= */
+form{margin:10px 0 16px}
+label{display:inline-block;margin:6px 0;font-weight:600}
+
+input[type="text"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+select, textarea{
+  width:min(520px,100%);
+  padding:10px 12px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:#fff;
+  outline:none;
+  font:inherit;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+textarea{min-height:96px;resize:vertical}
+
+input:focus, select:focus, textarea:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 4px var(--ring);
+}
+
+/* Inline form row */
+.form-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+/* Buttons */
+button, .btn{
+  appearance:none; cursor:pointer;
+  border:1px solid var(--primary);
+  background:var(--primary);
+  color:#fff;
+  padding:10px 16px;
+  border-radius:10px;
+  font-weight:700;
+  box-shadow:0 1px 0 rgba(0,0,0,.04);
+}
+button:hover,.btn:hover{background:var(--primary-600);border-color:var(--primary-600)}
+.btn.secondary{background:#fff;color:var(--text);border-color:var(--border)}
+.btn.danger{background:var(--danger);border-color:var(--danger)}
+.btn.success{background:var(--success);border-color:var(--success)}
+
+/* Button group inside table row */
+.table-actions{display:flex;gap:8px}
+.table-actions form{margin:0}
+
+/* ================================
+   TABLES
+================================= */
+.table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+  margin:10px 0 18px;
+}
+.table th, .table td{
+  padding:12px 14px;
+  border-bottom:1px solid var(--border);
+  vertical-align:top;
+}
+.table th{
+  background:#f8fafc;
+  text-align:left;
+  font-weight:700;
+}
+.table tr:last-child td{border-bottom:0}
+.table td.num{text-align:right}
+.table .empty{
+  text-align:center; color:var(--muted); font-style:italic;
+}
+
+/* Section titles like 'Chi tiêu', 'Thu nhập' */
+.section{
+  margin-top:18px;
+}
+.section h3{
+  display:flex; align-items:center; gap:10px;
+  padding-bottom:8px;
+  border-bottom:1px dashed var(--border);
+  margin-bottom:10px;
+}
+
+/* Flash messages */
+.flash{
+  margin:10px 0 14px;
+  padding:12px 14px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:#f9fafb;
+}
+.flash.success{background:#ecfdf5;border-color:#bbf7d0;color:#065f46}
+.flash.error{background:#fef2f2;border-color:#fecaca;color:#991b1b}
+.flash.info{background:#eff6ff;border-color:#bfdbfe;color:#1e40af}
+
+/* Login card (nếu login không dùng layout) */
+.login-card{
+  max-width:420px;margin:12vh auto;padding:28px;
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:16px; box-shadow:var(--shadow);
+}
+.login-card h2{text-align:center;margin-bottom:12px}
+
+/* Utilities */
+.m-0{margin:0}.mt-8{margin-top:8px}.mt-16{margin-top:16px}.mb-8{margin-bottom:8px}.mb-16{margin-bottom:16px}
+.grid{display:grid;gap:12px}
+.right{text-align:right}
+
+/* ================================
+   RESPONSIVE
+================================= */
+@media (max-width: 992px){
+  .layout{grid-template-columns:1fr;padding:16px}
+  .sidebar{position:static;height:auto}
+}
+
+/* Căn giữa toàn bộ nội dung bảng */
+.table td, .table th {
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Form trong ô bảng – căn giữa cả theo ngang và dọc */
+.table td form {
+  display: flex;
+  align-items: center;      /* căn giữa theo dọc */
+  justify-content: center;  /* căn giữa theo ngang */
+  gap: 8px;                 /* khoảng cách giữa input và nút Lưu */
+}
+
+/* Căn giữa input và nút Lưu gọn gàng hơn */
+.table td form input[type="text"] {
+  text-align: center;       /* căn chữ trong input */
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  padding: 4px 8px;
+}
+
+.table td form button {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 6px;
+}
+
+/* Căn giữa các nút trong cột thao tác */
+.table-actions {
+  display: flex;
+  justify-content: center;   /* căn giữa ngang */
+  align-items: center;       /* căn giữa dọc */
+}
+
+/* Nếu có nhiều nút thì giữ khoảng cách giữa chúng */
+.table-actions form {
+  margin: 0 5px;
+}
+
+.table td button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;     /* căn giữa nếu không dùng flex container */
+}
+

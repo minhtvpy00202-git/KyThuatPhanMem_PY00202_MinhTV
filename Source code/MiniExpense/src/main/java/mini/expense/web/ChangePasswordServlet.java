@@ -1,0 +1,57 @@
+package mini.expense.web;
+
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
+import jakarta.servlet.*;
+import mini.expense.config.DataSourceProvider;
+import mini.expense.dao.AuthDAO;
+import mini.expense.model.User;
+
+import java.io.IOException;
+
+@WebServlet(urlPatterns = { "/change-password" })
+public class ChangePasswordServlet extends HttpServlet {
+	private AuthDAO dao;
+
+	@Override
+	public void init() {
+		dao = new AuthDAO(DataSourceProvider.get());
+	}
+
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		User u = (User) req.getSession().getAttribute("user");
+		if (u == null) {
+			resp.sendRedirect(req.getContextPath() + "/login");
+			return;
+		}
+		req.getRequestDispatcher("/WEB-INF/views/change-password.jsp").forward(req, resp);
+	}
+
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		User u = (User) req.getSession().getAttribute("user");
+		if (u == null) {
+			resp.sendRedirect(req.getContextPath() + "/login");
+			return;
+		}
+
+		String oldPw = req.getParameter("old");
+		String newPw = req.getParameter("new");
+		String rePw = req.getParameter("re");
+
+		if (oldPw == null || newPw == null || rePw == null || !newPw.equals(rePw)) {
+			req.setAttribute("error", "Mật khẩu mới nhập lại không khớp.");
+			doGet(req, resp);
+			return;
+		}
+		if (!dao.checkPassword(u.id, oldPw)) {
+			req.setAttribute("error", "Mật khẩu cũ không đúng.");
+			doGet(req, resp);
+			return;
+		}
+		dao.changePassword(u.id, newPw);
+		req.setAttribute("msg", "Đổi mật khẩu thành công!");
+		doGet(req, resp);
+	}
+}

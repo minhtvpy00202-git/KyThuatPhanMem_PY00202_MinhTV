@@ -1,0 +1,24 @@
+package mini.expense.dao;
+import mini.expense.model.User;
+import javax.sql.DataSource;
+import java.sql.*;
+
+public class AuthDAO {
+  private final DataSource ds;
+  public AuthDAO(DataSource ds){ this.ds = ds; }
+  public User login(String username, String password){
+    String sql="SELECT * FROM [User] WHERE username=? AND password=?";
+    try(Connection cn=ds.getConnection(); PreparedStatement ps=cn.prepareStatement(sql)){
+      ps.setString(1, username); ps.setString(2, password);
+      try(ResultSet rs=ps.executeQuery()){
+        if(rs.next()){
+          User u = new User();
+          u.id = rs.getString("id"); u.username = rs.getString("username");
+          u.password = rs.getString("password"); u.roleId = rs.getString("roleId");
+          return u;
+        }
+      }
+    } catch(SQLException e){ throw new RuntimeException(e); }
+    return null;
+  }
+}

@@ -1,0 +1,5 @@
+1760721985283	Move 'views' to 'WEB-INF'
+1760722016790	Rename resource 'login,home,txn-form.jsp'
+1760724275683	Move 'categories-body.jsp' to 'partials'
+1760724279195	Move 'home-body.jsp' to 'partials'
+1760729275240	Move 'css' to 'WEB-INF'

@@ -1,0 +1,5 @@
+package mini.expense.web;
+
+public class TxnServlet {
+
+}
